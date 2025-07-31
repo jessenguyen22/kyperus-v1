@@ -1,0 +1,1045 @@
+{% comment %}
+  kpr-traditional.liquid - Traditional concept với sticky sidebar navigation
+{% endcomment %}
+
+<div x-data="kprTraditional()" 
+    x-init="init()"
+    x-show="isVisible"
+    x-transition:enter="transition ease-out duration-500"
+    x-transition:enter-start="opacity-0 transform translate-y-4" 
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="kpr-traditional-concept"
+    style="{% unless request.design_mode %}display: none;{% endunless %}">
+
+ <!-- Mobile Menu Toggle -->
+ <button @click="mobileMenuOpen = !mobileMenuOpen" 
+         class="kpr-mobile-menu-toggle">
+   <span class="hamburger-line"></span>
+   <span class="hamburger-line"></span>
+   <span class="hamburger-line"></span>
+ </button>
+
+ <!-- Layout Container -->
+ <div class="kpr-layout-container">
+   
+   <!-- Sticky Sidebar Navigation -->
+   <nav class="kpr-sidebar-nav" 
+        :class="{ 'mobile-open': mobileMenuOpen }"
+        @click.away="mobileMenuOpen = false">
+     
+     <div class="kpr-nav-header">
+       <h2 class="kpr-concept-title">{{ section.settings.concept_title | default: 'Traditional' }}</h2>
+       <p class="kpr-concept-subtitle">{{ section.settings.concept_subtitle | default: 'Timeless Design' }}</p>
+     </div>
+
+     <!-- Concept Navigation -->
+     <div class="kpr-nav-section">
+       <h3 class="kpr-nav-title">Explore Concepts</h3>
+       <ul class="kpr-nav-list">
+         <li class="kpr-nav-item active">
+           <a href="#" class="kpr-nav-link">
+             <span class="nav-icon">📜</span>
+             <span>Traditional</span>
+           </a>
+         </li>
+         <li class="kpr-nav-item">
+           <a href="#" @click.prevent="switchConcept('hybrid')" class="kpr-nav-link">
+             <span class="nav-icon">⚡</span>
+             <span>Hybrid</span>
+           </a>
+         </li>
+         <li class="kpr-nav-item">
+           <a href="#" @click.prevent="switchConcept('modern')" class="kpr-nav-link">
+             <span class="nav-icon">🚀</span>
+             <span>Modern</span>
+           </a>
+         </li>
+       </ul>
+     </div>
+
+     <!-- Section Navigation -->
+     <div class="kpr-nav-section">
+       <h3 class="kpr-nav-title">Sections</h3>
+       <ul class="kpr-nav-list">
+         <li class="kpr-nav-item">
+           <a href="#new-arrivals" class="kpr-nav-link">
+             <span class="nav-icon">✨</span>
+             <span>New Arrivals</span>
+           </a>
+         </li>
+         <li class="kpr-nav-item">
+           <a href="#best-sellers" class="kpr-nav-link">
+             <span class="nav-icon">🔥</span>
+             <span>Best Sellers</span>
+           </a>
+         </li>
+         <li class="kpr-nav-item">
+           <a href="#bundle-products" class="kpr-nav-link">
+             <span class="nav-icon">📦</span>
+             <span>Bundle Deals</span>
+           </a>
+         </li>
+       </ul>
+     </div>
+
+     <!-- Back to Home -->
+     <div class="kpr-nav-section">
+       <button @click="goHome()" class="kpr-back-home-btn">
+         <span class="nav-icon">🏠</span>
+         <span>Back to Home</span>
+       </button>
+     </div>
+
+   </nav>
+
+   <!-- Main Content Area -->
+   <main class="kpr-content-area">
+
+     {% for block in section.blocks %}
+       
+       {% case block.type %}
+         
+         {% when 'new-arrivals' %}
+           <section id="new-arrivals" class="kpr-content-block kpr-new-arrivals" {{ block.shopify_attributes }}>
+             <div class="kpr-block-header">
+               {% if block.settings.section_title != blank %}
+                 <h2 class="kpr-block-title">{{ block.settings.section_title }}</h2>
+               {% endif %}
+               
+               {% if block.settings.section_subtitle != blank %}
+                 <p class="kpr-block-subtitle">{{ block.settings.section_subtitle }}</p>
+               {% endif %}
+             </div>
+
+             {% if block.settings.collection != blank %}
+                <div class="kpr-products-grid-container">
+                <div class="kpr-products-grid-banner">
+                  <img src="{{ block.settings.banner_image | image_url: width: 1000 }}" 
+                       alt="{{ block.settings.banner_image.alt }}"
+                       loading="lazy">
+                </div>
+               <div class="kpr-products-grid">
+                 {% for product in collections[block.settings.collection].products limit: block.settings.products_count %}
+                   <div class="kpr-product-card">
+                     <a href="{{ product.url }}" class="kpr-product-link">
+                       
+                       <div class="kpr-product-image">
+                         {% if product.featured_image %}
+                           <img src="{{ product.featured_image | image_url: width: 400 }}" 
+                                alt="{{ product.title }}"
+                                loading="lazy">
+                         {% endif %}
+                         
+                         {% if block.settings.show_badges %}
+                           <div class="kpr-product-badges">
+                             {% if product.compare_at_price > product.price %}
+                               <span class="kpr-badge sale">Sale</span>
+                             {% endif %}
+                             <span class="kpr-badge new">New</span>
+                           </div>
+                         {% endif %}
+                       </div>
+                       
+                       <div class="kpr-product-info">
+                         <h3 class="kpr-product-title">{{ product.title }}</h3>
+                         
+                         <div class="kpr-product-price">
+                           {% if product.compare_at_price > product.price %}
+                             <span class="price-sale">{{ product.price | money }}</span>
+                             <span class="price-compare">{{ product.compare_at_price | money }}</span>
+                           {% else %}
+                             <span class="price-regular">{{ product.price | money }}</span>
+                           {% endif %}
+                         </div>
+                         
+                         {% if block.settings.show_description and product.description != blank %}
+                           <p class="kpr-product-description">{{ product.description | strip_html | truncate: 100 }}</p>
+                         {% endif %}
+                       </div>
+                       
+                     </a>
+                   </div>
+                 {% endfor %}
+               </div>
+               </div>
+
+               {% if block.settings.show_view_all and block.settings.collection != blank %}
+                 <div class="kpr-block-footer">
+                   <a href="{{ collections[block.settings.collection].url }}" class="kpr-view-all-btn">
+                     View All New Arrivals
+                   </a>
+                 </div>
+               {% endif %}
+             {% endif %}
+           </section>
+         
+         {% when 'best-sellers' %}
+           <section id="best-sellers" class="kpr-content-block kpr-best-sellers" {{ block.shopify_attributes }}>
+             <div class="kpr-block-header">
+               {% if block.settings.section_title != blank %}
+                 <h2 class="kpr-block-title">{{ block.settings.section_title }}</h2>
+               {% endif %}
+               
+               {% if block.settings.section_subtitle != blank %}
+                 <p class="kpr-block-subtitle">{{ block.settings.section_subtitle }}</p>
+               {% endif %}
+             </div>
+
+             {% if block.settings.collection != blank %}
+               <div class="kpr-products-grid kpr-best-sellers-grid">
+                 {% for product in collections[block.settings.collection].products limit: block.settings.products_count %}
+                   <div class="kpr-product-card bestseller">
+                     <a href="{{ product.url }}" class="kpr-product-link">
+                       
+                       <div class="kpr-product-image">
+                         {% if product.featured_image %}
+                           <img src="{{ product.featured_image | image_url: width: 400 }}" 
+                                alt="{{ product.title }}"
+                                loading="lazy">
+                         {% endif %}
+                         
+                         {% if block.settings.show_badges %}
+                           <div class="kpr-product-badges">
+                             <span class="kpr-badge bestseller">🏆 Best Seller</span>
+                           </div>
+                         {% endif %}
+                       </div>
+                       
+                       <div class="kpr-product-info">
+                         <h3 class="kpr-product-title">{{ product.title }}</h3>
+                         
+                         <div class="kpr-product-price">
+                           {% if product.compare_at_price > product.price %}
+                             <span class="price-sale">{{ product.price | money }}</span>
+                             <span class="price-compare">{{ product.compare_at_price | money }}</span>
+                           {% else %}
+                             <span class="price-regular">{{ product.price | money }}</span>
+                           {% endif %}
+                         </div>
+                         
+                         {% if block.settings.show_rating %}
+                           <div class="kpr-product-rating">
+                             <span class="stars">⭐⭐⭐⭐⭐</span>
+                             <span class="rating-count">(127 reviews)</span>
+                           </div>
+                         {% endif %}
+                       </div>
+                       
+                     </a>
+                   </div>
+                 {% endfor %}
+               </div>
+
+               {% if block.settings.show_view_all and block.settings.collection != blank %}
+                 <div class="kpr-block-footer">
+                   <a href="{{ collections[block.settings.collection].url }}" class="kpr-view-all-btn">
+                     Shop Best Sellers
+                   </a>
+                 </div>
+               {% endif %}
+             {% endif %}
+           </section>
+         
+         {% when 'bundle-products' %}
+           <section id="bundle-products" class="kpr-content-block kpr-bundle-products" {{ block.shopify_attributes }}>
+             <div class="kpr-block-header">
+               {% if block.settings.section_title != blank %}
+                 <h2 class="kpr-block-title">{{ block.settings.section_title }}</h2>
+               {% endif %}
+               
+               {% if block.settings.section_subtitle != blank %}
+                 <p class="kpr-block-subtitle">{{ block.settings.section_subtitle }}</p>
+               {% endif %}
+             </div>
+
+             {% if block.settings.collection != blank %}
+               <div class="kpr-bundle-grid">
+                 {% for product in collections[block.settings.collection].products limit: block.settings.products_count %}
+                   <div class="kpr-bundle-card">
+                     <a href="{{ product.url }}" class="kpr-bundle-link">
+                       
+                       <div class="kpr-bundle-image">
+                         {% if product.featured_image %}
+                           <img src="{{ product.featured_image | image_url: width: 500 }}" 
+                                alt="{{ product.title }}"
+                                loading="lazy">
+                         {% endif %}
+                         
+                         <div class="kpr-bundle-overlay">
+                           <div class="kpr-bundle-info">
+                             <h3 class="kpr-bundle-title">{{ product.title }}</h3>
+                             <p class="kpr-bundle-description">{{ product.description | strip_html | truncate: 150 }}</p>
+                             
+                             <div class="kpr-bundle-pricing">
+                               {% if product.compare_at_price > product.price %}
+                                 <div class="bundle-savings">
+                                   Save {{ product.compare_at_price | minus: product.price | money }}
+                                 </div>
+                               {% endif %}
+                               <div class="bundle-price">{{ product.price | money }}</div>
+                             </div>
+                             
+                             <button class="kpr-bundle-btn">Add Bundle to Cart</button>
+                           </div>
+                         </div>
+                       </div>
+                       
+                     </a>
+                   </div>
+                 {% endfor %}
+               </div>
+             {% endif %}
+           </section>
+           
+       {% endcase %}
+       
+     {% endfor %}
+
+   </main>
+
+ </div>
+
+</div>
+
+<style>
+ /* Traditional Concept Styles */
+ .kpr-traditional-concept {
+
+   color: #2c3e50;
+   min-height: 100vh;
+   background: #fafafa;
+ }
+
+ /* Mobile Menu Toggle */
+ .kpr-mobile-menu-toggle {
+   display: none;
+   position: fixed;
+   top: 2rem;
+   left: 2rem;
+   z-index: 1001;
+   background: #2c3e50;
+   border: none;
+   border-radius: 8px;
+   padding: 0.75rem;
+   flex-direction: column;
+   gap: 4px;
+ }
+
+ .hamburger-line {
+   width: 20px;
+   height: 2px;
+   background: white;
+   transition: all 0.3s ease;
+ }
+
+ /* Layout Container */
+ .kpr-layout-container {
+   display: flex;
+   min-height: 100vh;
+ }
+
+ /* Sticky Sidebar Navigation */
+ .kpr-sidebar-nav {
+   width: 280px;
+   background: #000;
+   color: white;
+   position: sticky;
+   top: 0;
+   height: 100vh;
+   overflow-y: auto;
+   padding: 2rem 0;
+   box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+ }
+
+ .kpr-nav-header {
+   padding: 0 2rem 2rem;
+   border-bottom: 1px solid rgba(255,255,255,0.1);
+   margin-bottom: 2rem;
+ }
+
+ .kpr-concept-title {
+   font-size: 1.5rem;
+   font-weight: 700;
+   margin-bottom: 0.5rem;
+   color: #f39c12;
+ }
+
+ .kpr-concept-subtitle {
+   font-size: 0.9rem;
+   opacity: 0.8;
+   margin: 0;
+ }
+
+ .kpr-nav-section {
+   margin-bottom: 2rem;
+   padding: 0 2rem;
+ }
+
+ .kpr-nav-title {
+   font-size: 0.8rem;
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   margin-bottom: 1rem;
+   opacity: 0.7;
+ }
+
+ .kpr-nav-list {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+ }
+
+ .kpr-nav-item {
+   margin-bottom: 0.5rem;
+ }
+
+ .kpr-nav-link {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   padding: 0.75rem 1rem;
+   color: white;
+   text-decoration: none;
+   border-radius: 8px;
+   transition: all 0.3s ease;
+   font-size: 0.9rem;
+ }
+
+ .kpr-nav-link:hover {
+   background: rgba(255,255,255,0.1);
+   transform: translateX(4px);
+ }
+
+ .kpr-nav-item.active .kpr-nav-link {
+   background: #f39c12;
+   color: white;
+ }
+
+ .nav-icon {
+   font-size: 1.2rem;
+ }
+
+ .kpr-back-home-btn {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   width: 100%;
+   padding: 0.75rem 1rem;
+   background: #e74c3c;
+   color: white;
+   border: none;
+   border-radius: 8px;
+   font-size: 0.9rem;
+   cursor: pointer;
+   transition: all 0.3s ease;
+ }
+
+ .kpr-back-home-btn:hover {
+   background: #c0392b;
+   transform: translateY(-1px);
+ }
+
+ /* Main Content Area */
+ .kpr-content-area {
+   background: #000;
+   flex: 1;
+   padding-left: 10px;
+   padding-right: 10px;
+   padding-top: 10px;
+   max-width: calc(100% - 280px);
+ }
+
+ .kpr-content-block {
+   margin-bottom: 4rem;
+   background: white;
+   border-radius: 12px;
+   padding: 2.5rem;
+   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+ }
+
+ .kpr-block-header {
+
+   margin-bottom: 2.5rem;
+ }
+
+ .kpr-block-title {
+   font-size: 2.2rem;
+   font-weight: 700;
+   margin-bottom: 0.5rem;
+   color: #2c3e50;
+ }
+
+ .kpr-block-subtitle {
+   font-size: 1.1rem;
+   color: #7f8c8d;
+   margin: 0;
+ }
+
+ /* Products Grid */
+ .kpr-products-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+   gap: 2rem;
+   margin-bottom: 2rem;
+ }
+
+ .kpr-product-card {
+   background: white;
+   border-radius: 12px;
+   overflow: hidden;
+   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+   transition: all 0.3s ease;
+   position: relative;
+ }
+
+ .kpr-product-card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+ }
+
+ .kpr-product-link {
+   text-decoration: none;
+   color: inherit;
+   display: block;
+ }
+
+ .kpr-product-image {
+   position: relative;
+   overflow: hidden;
+ }
+
+ .kpr-product-image img {
+   width: 100%;
+   height: 250px;
+   object-fit: cover;
+   transition: transform 0.3s ease;
+ }
+
+ .kpr-product-card:hover .kpr-product-image img {
+   transform: scale(1.05);
+ }
+
+ .kpr-product-badges {
+   position: absolute;
+   top: 1rem;
+   left: 1rem;
+   display: flex;
+   flex-direction: column;
+   gap: 0.5rem;
+ }
+
+ .kpr-badge {
+   padding: 0.25rem 0.75rem;
+   border-radius: 20px;
+   font-size: 0.8rem;
+   font-weight: 600;
+   text-transform: uppercase;
+ }
+
+ .kpr-badge.new {
+   background: #2ecc71;
+   color: white;
+ }
+
+ .kpr-badge.sale {
+   background: #e74c3c;
+   color: white;
+ }
+
+ .kpr-badge.bestseller {
+   background: #f39c12;
+   color: white;
+ }
+
+ .kpr-product-info {
+   padding: 1.5rem;
+ }
+
+ .kpr-product-title {
+   font-size: 1.2rem;
+   font-weight: 600;
+   margin-bottom: 0.5rem;
+   color: #2c3e50;
+ }
+
+ .kpr-product-price {
+   margin-bottom: 0.75rem;
+ }
+
+ .price-sale {
+   color: #e74c3c;
+   font-weight: 700;
+   font-size: 1.1rem;
+ }
+
+ .price-compare {
+   color: #95a5a6;
+   text-decoration: line-through;
+   margin-left: 0.5rem;
+ }
+
+ .price-regular {
+   color: #2c3e50;
+   font-weight: 700;
+   font-size: 1.1rem;
+ }
+
+ .kpr-product-description {
+   font-size: 0.9rem;
+   color: #7f8c8d;
+   line-height: 1.5;
+   margin: 0;
+ }
+
+ .kpr-product-rating {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   font-size: 0.9rem;
+ }
+
+ .stars {
+   color: #f39c12;
+ }
+
+ .rating-count {
+   color: #95a5a6;
+ }
+
+ /* Bundle Products Specific */
+ .kpr-bundle-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+   gap: 2rem;
+ }
+
+ .kpr-bundle-card {
+   border-radius: 12px;
+   overflow: hidden;
+   position: relative;
+   height: 300px;
+ }
+
+ .kpr-bundle-link {
+   text-decoration: none;
+   color: inherit;
+   display: block;
+   height: 100%;
+ }
+
+ .kpr-bundle-image {
+   position: relative;
+   height: 100%;
+   overflow: hidden;
+ }
+
+ .kpr-bundle-image img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   transition: transform 0.3s ease;
+ }
+
+ .kpr-bundle-overlay {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: linear-gradient(135deg, rgba(44,62,80,0.8) 0%, rgba(52,73,94,0.9) 100%);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   opacity: 0;
+   transition: all 0.3s ease;
+ }
+
+ .kpr-bundle-card:hover .kpr-bundle-overlay {
+   opacity: 1;
+ }
+
+ .kpr-bundle-card:hover .kpr-bundle-image img {
+   transform: scale(1.1);
+ }
+
+ .kpr-bundle-info {
+   text-align: center;
+   color: white;
+   padding: 2rem;
+ }
+
+ .kpr-bundle-title {
+   font-size: 1.5rem;
+   font-weight: 700;
+   margin-bottom: 1rem;
+ }
+
+ .kpr-bundle-description {
+   font-size: 1rem;
+   margin-bottom: 1.5rem;
+   opacity: 0.9;
+ }
+
+ .kpr-bundle-pricing {
+   margin-bottom: 1.5rem;
+ }
+
+ .bundle-savings {
+   background: #e74c3c;
+   color: white;
+   padding: 0.25rem 0.75rem;
+   border-radius: 20px;
+   font-size: 0.9rem;
+   margin-bottom: 0.5rem;
+   display: inline-block;
+ }
+
+ .bundle-price {
+   font-size: 1.5rem;
+   font-weight: 700;
+   color: #f39c12;
+ }
+
+ .kpr-bundle-btn {
+   padding: 0.75rem 1.5rem;
+   background: #f39c12;
+   color: white;
+   border: none;
+   border-radius: 25px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.3s ease;
+ }
+
+ .kpr-bundle-btn:hover {
+   background: #e67e22;
+   transform: translateY(-2px);
+ }
+
+ /* Block Footer */
+ .kpr-block-footer {
+   text-align: center;
+   margin-top: 2rem;
+ }
+
+ .kpr-view-all-btn {
+   display: inline-block;
+   padding: 1rem 2rem;
+   background: #2c3e50;
+   color: white;
+   text-decoration: none;
+   border-radius: 25px;
+   font-weight: 600;
+   transition: all 0.3s ease;
+ }
+
+ .kpr-view-all-btn:hover {
+   background: #34495e;
+   transform: translateY(-2px);
+ }
+
+ /* Mobile Responsive */
+ @media (max-width: 1024px) {
+   .kpr-mobile-menu-toggle {
+     display: flex;
+   }
+
+   .kpr-sidebar-nav {
+     position: fixed;
+     left: -280px;
+     top: 0;
+     z-index: 1000;
+     transition: left 0.3s ease;
+   }
+
+   .kpr-sidebar-nav.mobile-open {
+     left: 0;
+   }
+
+   .kpr-content-area {
+     max-width: 100%;
+     margin-left: 0;
+     padding-left: 10px;
+     padding-right: 10px;
+   }
+
+   .kpr-layout-container {
+     flex-direction: column;
+   }
+ }
+
+ @media (max-width: 768px) {
+   .kpr-content-area {
+     padding: 1rem;
+   }
+
+   .kpr-content-block {
+     padding: 1.5rem;
+   }
+
+   .kpr-products-grid {
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     gap: 1.5rem;
+   }
+
+   .kpr-bundle-grid {
+     grid-template-columns: 1fr;
+     gap: 1.5rem;
+   }
+
+   .kpr-block-title {
+     font-size: 1.8rem;
+   }
+ }
+</style>
+
+<script>
+ function kprTraditional() {
+   return {
+     isVisible: false,
+     mobileMenuOpen: false,
+     
+     init() {
+       console.log('Traditional section initialized');
+       
+       // Check if we're in design mode
+       if ({{ request.design_mode | json }}) {
+         console.log('Design mode: Traditional section always visible');
+         this.isVisible = true;
+         return;
+       }
+       
+       // Listen for view changes from global controller
+       window.addEventListener('kpr-view-changed', (e) => {
+         const currentView = e.detail.currentView;
+         console.log('Traditional section received view change:', currentView);
+         
+         this.isVisible = (currentView === 'traditional');
+         
+         // Close mobile menu when switching concepts
+         if (this.isVisible) {
+           this.mobileMenuOpen = false;
+         }
+       });
+       
+       // Check initial state from global controller
+       if (window.kprController) {
+         this.isVisible = (window.kprController.currentView === 'traditional');
+       }
+
+       // Smooth scroll for navigation links
+       this.initSmoothScroll();
+     },
+
+     switchConcept(concept) {
+       if (window.kprController) {
+         window.kprController.showSection(concept);
+       }
+       this.mobileMenuOpen = false;
+     },
+
+     goHome() {
+       if (window.kprController) {
+         window.kprController.goHome();
+       }
+       this.mobileMenuOpen = false;
+     },
+
+     initSmoothScroll() {
+       // Smooth scroll for section navigation
+       document.addEventListener('click', (e) => {
+         if (e.target.matches('a[href^="#"]')) {
+           e.preventDefault();
+           const target = document.querySelector(e.target.getAttribute('href'));
+           if (target) {
+             target.scrollIntoView({
+               behavior: 'smooth',
+               block: 'start'
+             });
+           }
+         }
+       });
+     }
+   }
+ }
+</script>
+
+{% schema %}
+{
+ "name": "Traditional Concept",
+ "tag": "section",
+ "class": "kpr-traditional-concept-section",
+ "max_blocks": 10,
+ "settings": [
+   {
+     "type": "text",
+     "id": "concept_title",
+     "label": "Concept Title",
+     "default": "Traditional"
+   },
+   {
+     "type": "text",
+     "id": "concept_subtitle",
+     "label": "Concept Subtitle",
+     "default": "Timeless Design"
+   }
+ ],
+ "blocks": [
+   {
+     "type": "new-arrivals",
+     "name": "New Arrivals",
+     "limit": 1,
+     "settings": [
+       {
+         "type": "text",
+         "id": "section_title",
+         "label": "Section Title",
+         "default": "New Arrivals"
+       },
+       {
+         "type": "text",
+         "id": "section_subtitle",
+         "label": "Section Subtitle",
+         "default": "Discover our latest traditional pieces"
+       },
+       {
+         "type": "collection",
+         "id": "collection",
+         "label": "Collection"
+       },
+       {
+         "type": "range",
+         "id": "products_count",
+         "label": "Products Count",
+         "min": 3,
+         "max": 12,
+         "step": 1,
+         "default": 6
+       },
+       {
+         "type": "checkbox",
+         "id": "show_badges",
+         "label": "Show Product Badges",
+         "default": true
+       },
+       {
+         "type": "checkbox",
+         "id": "show_description",
+         "label": "Show Product Description",
+         "default": false
+       },
+       {
+         "type": "checkbox",
+         "id": "show_view_all",
+         "label": "Show View All Button",
+         "default": true
+       }
+     ]
+   },
+   {
+     "type": "best-sellers",
+     "name": "Best Sellers",
+     "limit": 1,
+     "settings": [
+       {
+         "type": "text",
+         "id": "section_title",
+         "label": "Section Title",
+         "default": "Best Sellers"
+       },
+       {
+         "type": "text",
+         "id": "section_subtitle",
+         "label": "Section Subtitle",
+         "default": "Our most popular traditional items"
+       },
+       {
+         "type": "collection",
+         "id": "collection",
+         "label": "Collection"
+       },
+       {
+         "type": "range",
+         "id": "products_count",
+         "label": "Products Count",
+         "min": 3,
+         "max": 12,
+         "step": 1,
+         "default": 8
+       },
+       {
+         "type": "checkbox",
+         "id": "show_badges",
+         "label": "Show Product Badges",
+         "default": true
+       },
+       {
+         "type": "checkbox",
+         "id": "show_rating",
+         "label": "Show Product Rating",
+         "default": true
+       },
+       {
+         "type": "checkbox",
+         "id": "show_view_all",
+         "label": "Show View All Button",
+         "default": true
+       }
+     ]
+   },
+   {
+     "type": "bundle-products",
+     "name": "Bundle Products",
+     "limit": 1,
+     "settings": [
+       {
+         "type": "text",
+         "id": "section_title",
+         "label": "Section Title",
+         "default": "Bundle Deals"
+       },
+       {
+         "type": "text",
+         "id": "section_subtitle",
+         "label": "Section Subtitle",
+         "default": "Save more with our curated bundles"
+       },
+       {
+         "type": "collection",
+         "id": "collection",
+         "label": "Collection"
+       },
+       {
+         "type": "range",
+         "id": "products_count",
+         "label": "Products Count",
+         "min": 2,
+         "max": 6,
+         "step": 1,
+         "default": 4
+       }
+     ]
+   }
+ ],
+ "presets": [
+   {
+     "name": "Traditional Concept",
+     "blocks": [
+       {
+         "type": "new-arrivals"
+       },
+       {
+         "type": "best-sellers"
+       },
+       {
+         "type": "bundle-products"
+       }
+     ]
+   }
+ ]
+}
+{% endschema %}

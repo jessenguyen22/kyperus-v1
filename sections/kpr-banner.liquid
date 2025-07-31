@@ -1,0 +1,261 @@
+{% comment %}
+  kpr-banner.liquid - Hero banner + Global Alpine.js controller
+{% endcomment %}
+
+<div x-data="kprHomepage()" 
+    x-init="init()" 
+    class="kpr-homepage-controller"
+    x-ref="homepageController">
+ 
+ <!-- Hero Banner -->
+ <div x-show="currentView === 'home'" 
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-300"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="kpr-hero-banner">
+   <div class="kpr-hero-content">
+     <h1 class="kpr-hero-title">{{ section.settings.hero_title | default: 'Chọn Phong Cách Của Bạn' }}</h1>
+     <p class="kpr-hero-subtitle">{{ section.settings.hero_subtitle | default: 'Khám phá các xu hướng thiết kế đa dạng cho dự án của bạn' }}</p>
+     
+     <div class="kpr-button-container">
+       <button @click="showSection('traditional')" class="kpr-category-btn">
+         {{ section.settings.btn_traditional | default: 'Traditional' }}
+       </button>
+       <button @click="showSection('hybrid')" class="kpr-category-btn">
+         {{ section.settings.btn_hybrid | default: 'Hybrid' }}
+       </button>
+       <button @click="showSection('modern')" class="kpr-category-btn">
+         {{ section.settings.btn_modern | default: 'Modern' }}
+       </button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Back Button -->
+ {% comment %} <button x-show="currentView !== 'home'" 
+         @click="goHome()"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         class="kpr-back-btn">
+   ← {{ section.settings.back_btn_text | default: 'Về Trang Chủ' }}
+ </button> {% endcomment %}
+
+</div>
+
+<style>
+ /* Global Controller */
+ .kpr-homepage-controller {
+   position: relative;
+ }
+
+ /* Hero Banner Styles */
+ .kpr-hero-banner {
+   height: 100vh;
+   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
+   color: white;
+   position: relative;
+ }
+ 
+ .kpr-hero-content {
+   max-width: 800px;
+   padding: 0 2rem;
+ }
+ 
+ .kpr-hero-title {
+   font-size: 3.5rem;
+   font-weight: 700;
+   margin-bottom: 1rem;
+   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+ }
+ 
+ .kpr-hero-subtitle {
+   font-size: 1.2rem;
+   margin-bottom: 3rem;
+   opacity: 0.9;
+ }
+ 
+ .kpr-button-container {
+   display: flex;
+   gap: 2rem;
+   justify-content: center;
+   flex-wrap: wrap;
+ }
+ 
+ .kpr-category-btn {
+   padding: 1rem 2rem;
+   font-size: 1.1rem;
+   font-weight: 600;
+   border: 2px solid white;
+   background: transparent;
+   color: white;
+   border-radius: 50px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   min-width: 160px;
+ }
+ 
+ .kpr-category-btn:hover {
+   background: white;
+   color: #667eea;
+   transform: translateY(-2px);
+   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+ }
+
+ /* Back Button */
+ .kpr-back-btn {
+   position: fixed;
+   top: 2rem;
+   left: 2rem;
+   padding: 0.8rem 1.5rem;
+   background: #667eea;
+   color: white;
+   border: none;
+   border-radius: 25px;
+   cursor: pointer;
+   font-weight: 600;
+   transition: all 0.3s ease;
+   z-index: 1000;
+   font-size: 1rem;
+ }
+ 
+ .kpr-back-btn:hover {
+   background: #5a67d8;
+   transform: translateY(-1px);
+ }
+ 
+ /* Mobile responsive */
+ @media (max-width: 768px) {
+   .kpr-hero-title {
+     font-size: 2.5rem;
+   }
+   
+   .kpr-button-container {
+     flex-direction: column;
+     align-items: center;
+   }
+   
+   .kpr-category-btn {
+     width: 250px;
+   }
+
+   .kpr-back-btn {
+     top: 1rem;
+     left: 1rem;
+     padding: 0.6rem 1.2rem;
+     font-size: 0.9rem;
+   }
+ }
+</style>
+
+<script>
+ // Global Alpine.js controller
+ function kprHomepage() {
+   return {
+     currentView: 'home', // 'home', 'traditional', 'hybrid', 'modern'
+     
+     init() {
+       console.log('KPR Homepage Controller initialized');
+       
+       // Make controller globally accessible
+       window.kprController = this;
+       
+       // Handle browser back/forward buttons
+       window.addEventListener('popstate', (e) => {
+         if (e.state && e.state.view) {
+           this.currentView = e.state.view;
+           console.log('Browser back/forward:', this.currentView);
+         } else {
+           this.currentView = 'home';
+         }
+       });
+       
+       // Set initial state
+       history.replaceState({ view: 'home' }, '', window.location.pathname);
+     },
+     
+     showSection(section) {
+       console.log('Showing section:', section);
+       this.currentView = section;
+       // Add to browser history so back button works
+       history.pushState({ view: section }, '', `${window.location.pathname}#${section}`);
+       
+       // Dispatch custom event for other sections to listen
+       window.dispatchEvent(new CustomEvent('kpr-view-changed', {
+         detail: { currentView: this.currentView }
+       }));
+     },
+     
+     goHome() {
+       console.log('Going home');
+       this.currentView = 'home';
+       history.pushState({ view: 'home' }, '', window.location.pathname);
+       
+       // Dispatch custom event
+       window.dispatchEvent(new CustomEvent('kpr-view-changed', {
+         detail: { currentView: this.currentView }
+       }));
+     }
+   }
+ }
+</script>
+
+{% schema %}
+{
+ "name": "KPR Banner",
+ "tag": "section",
+ "class": "kpr-banner-section",
+ "settings": [
+   {
+     "type": "text",
+     "id": "hero_title",
+     "label": "Hero Title",
+     "default": "Chọn Phong Cách Của Bạn"
+   },
+   {
+     "type": "text",
+     "id": "hero_subtitle", 
+     "label": "Hero Subtitle",
+     "default": "Khám phá các xu hướng thiết kế đa dạng cho dự án của bạn"
+   },
+   {
+     "type": "text",
+     "id": "btn_traditional",
+     "label": "Traditional Button Text",
+     "default": "Traditional"
+   },
+   {
+     "type": "text",
+     "id": "btn_hybrid",
+     "label": "Hybrid Button Text", 
+     "default": "Hybrid"
+   },
+   {
+     "type": "text",
+     "id": "btn_modern",
+     "label": "Modern Button Text",
+     "default": "Modern"
+   },
+   {
+     "type": "text",
+     "id": "back_btn_text",
+     "label": "Back Button Text",
+     "default": "Về Trang Chủ"
+   }
+ ],
+ "presets": [
+   {
+     "name": "KPR Banner"
+   }
+ ]
+}
+{% endschema %}
