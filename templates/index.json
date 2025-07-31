@@ -9,14 +9,15 @@
  */
 {
   "sections": {
-    "image_with_text_2_8rp7Rt": {
+    "image_with_text_2_cN8LQr": {
       "type": "image-with-text-2",
       "name": "Image with text overlay",
       "settings": {
         "color_scheme": "",
         "container": "w-full",
-        "hero_size": "adapt",
+        "hero_size": "fullscreen",
         "show_overlay": true,
+        "image": "shopify://shop_images/testi2.jpg",
         "image_link": "",
         "parallax": false,
         "parallax_direction": "vertical",
@@ -42,6 +43,6 @@
     }
   },
   "order": [
-    "image_with_text_2_8rp7Rt"
+    "image_with_text_2_cN8LQr"
   ]
 }
