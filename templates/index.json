@@ -9,104 +9,39 @@
  */
 {
   "sections": {
-    "16225125199f82d8fe": {
-      "type": "icon-box",
-      "blocks": {
-        "16225125199f82d8fe-0": {
-          "type": "iconbox",
-          "settings": {
-            "card_color_scheme": "",
-            "image_by_url": "",
-            "title": "Free Shipping",
-            "description": "<p>Free Shipping for orders over £130</p>",
-            "link": "",
-            "button_label": "",
-            "button_link": "",
-            "button_style": "sf__btn-link",
-            "button_size": ""
-          }
-        },
-        "16225125199f82d8fe-1": {
-          "type": "iconbox",
-          "settings": {
-            "card_color_scheme": "",
-            "image_by_url": "",
-            "title": "Money Guarantee",
-            "description": "<p>Within 30 days for an exchange.</p>",
-            "link": "",
-            "button_label": "",
-            "button_link": "",
-            "button_style": "sf__btn-link",
-            "button_size": ""
-          }
-        },
-        "16225125199f82d8fe-2": {
-          "type": "iconbox",
-          "settings": {
-            "card_color_scheme": "",
-            "image_by_url": "",
-            "title": "Online Support",
-            "description": "<p>24 hours a day, 7 days a week</p>",
-            "link": "",
-            "button_label": "",
-            "button_link": "",
-            "button_style": "sf__btn-link",
-            "button_size": ""
-          }
-        },
-        "71deafbb-3baf-443a-a087-3f7b8af7b9fa": {
-          "type": "iconbox",
-          "settings": {
-            "card_color_scheme": "",
-            "image_by_url": "",
-            "title": "Flexible Payment",
-            "description": "<p>Pay with Multiple Credit Cards</p>",
-            "link": "",
-            "button_label": "",
-            "button_link": "",
-            "button_style": "sf__btn-link",
-            "button_size": ""
-          }
-        }
-      },
-      "block_order": [
-        "16225125199f82d8fe-0",
-        "16225125199f82d8fe-1",
-        "16225125199f82d8fe-2",
-        "71deafbb-3baf-443a-a087-3f7b8af7b9fa"
-      ],
-      "custom_css": [
-        ".m-icon-box__icon {margin-right: 12px;}",
-        ".m-icon-box--small {border-top-width: 0;}"
-      ],
+    "image_with_text_2_8rp7Rt": {
+      "type": "image-with-text-2",
+      "name": "Image with text overlay",
       "settings": {
-        "container": "container-fluid",
         "color_scheme": "",
-        "heading": "",
-        "heading_size": "h3",
-        "subheading": "",
-        "description": "",
-        "header_alignment": "center",
-        "item_per_row": 4,
-        "item_gap": 30,
-        "item_gap_mobile": 10,
-        "card_style": "horizontal",
-        "image_max_width": "60px",
-        "content_alignment": "start",
-        "hover_effect": "none",
-        "enable_slider": false,
-        "show_pagination": true,
-        "show_navigation": true,
-        "use_scroll_mobile": false,
-        "use_grid_column_mb": false,
-        "padding_top": 46,
-        "padding_bottom": 46,
-        "custom_class": "m-icon-box--small",
-        "animations": "inherit"
+        "container": "w-full",
+        "hero_size": "adapt",
+        "show_overlay": true,
+        "image_link": "",
+        "parallax": false,
+        "parallax_direction": "vertical",
+        "content_in_container": false,
+        "content_position": "center middle",
+        "text_alignment": "center",
+        "text_size": "medium",
+        "text_color": "white",
+        "title": "Image with text overlay",
+        "subtitle": "",
+        "text": "<p>Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story.</p>",
+        "button_label": "Shop now",
+        "button_link": "",
+        "button_style": "m-button--primary",
+        "button_size": "",
+        "text_alignment_mobile": "center",
+        "use_content_above": false,
+        "custom_class": "",
+        "animations": "inherit",
+        "enable_bg_zoom_effect": true,
+        "enable_preload_image": false
       }
     }
   },
   "order": [
-    "16225125199f82d8fe"
+    "image_with_text_2_8rp7Rt"
   ]
 }
